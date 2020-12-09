@@ -14,6 +14,9 @@ foreach ($events as $event) {
     if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
         $reply_token = $event->getReplyToken();
         $text = $event->getText();
-        $bot->replyText($reply_token, $text);
+        //$bot->replyText($reply_token, $text);
+        if ($text == '草') {
+            $bot->replyText($reply_token, '草言うな');
+        }
     }
 }
