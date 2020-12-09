@@ -18,5 +18,8 @@ foreach ($events as $event) {
         if ($text == '草') {
             $bot->replyText($reply_token, '草言うな');
         }
+        if ($text == 'あーはん？') {
+            $bot->replyText($reply_token, '黙れよ');
+        }
     }
 }
