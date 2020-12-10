@@ -15,11 +15,9 @@ foreach ($events as $event) {
         $reply_token = $event->getReplyToken();
         $text = $event->getText();
         //$bot->replyText($reply_token, $text);
-        //if ($text == '草') {
-        //    $bot->replyText($reply_token, '草言うな');
 
         switch ($text) {
-            case $text === '草':
+            case strpos($text, '草') !==false:
                 $bot->replyText($reply_token, '草言うな');
                 break;
             
