@@ -25,7 +25,7 @@ foreach ($events as $event) {
                 $bot->replyText($reply_token, '黙れよ');
                 break;
 
-            case $text === '説明' || 'せつめい':
+            case $text === '説明':
                 $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
                 break;
 
