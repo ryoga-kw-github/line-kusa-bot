@@ -28,7 +28,15 @@ foreach ($events as $event) {
             case $text === '説明' || 'せつめい':
                 $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
                 break;
-            }
 
+            case $text === 'ボタン':
+                $yes_button = new PostbackTemplateActionBuilder('はい', 'button=1');
+                $no_button = new PostbackTemplateActionBuilder('キャンセル', 'button=0');
+                $actions = [$yes_button, $no_button];
+                $button = new ButtonTemplateBuilder('タイトル', 'テキスト', '', $actions);
+                $button_message = new TemplateMessageBuilder('タイトル', $button);
+                $bot->replyMessage($reply_token, $button_message);
+                break;
+            }
     }
 }
