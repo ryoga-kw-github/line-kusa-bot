@@ -29,7 +29,7 @@ foreach ($events as $event) {
                 $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
                 break;
 
-            case $text === 'ボタン':
+            case strpos($text, 'ボタン') !==false:
                 $yes_button = new PostbackTemplateActionBuilder('はい', 'button=1');
                 $no_button = new PostbackTemplateActionBuilder('キャンセル', 'button=0');
                 $actions = [$yes_button, $no_button];
