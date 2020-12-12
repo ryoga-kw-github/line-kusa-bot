@@ -2,6 +2,9 @@
 
 //LINE SDKの読み込み
 require_once __DIR__ . '/vendor/autoload.php';
+use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 
 $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(getenv('CHANNEL_ACCESS_TOKEN'));
 $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => getenv('CHANNEL_SECRET')]);
@@ -9,6 +12,12 @@ $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => getenv('CHANNEL_SECRET
 $sign = $_SERVER["HTTP_" . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
+
+//------------------------------------
+
+
+
+//------------------------------------
 
 foreach ($events as $event) {
     if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
@@ -29,7 +38,7 @@ foreach ($events as $event) {
                 $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
                 break;
 
-            case strpos($text, 'ボタン') !==false:
+            case $text === 'ボタン':
                 $yes_button = new PostbackTemplateActionBuilder('はい', 'button=1');
                 $no_button = new PostbackTemplateActionBuilder('キャンセル', 'button=0');
                 $actions = [$yes_button, $no_button];
@@ -37,6 +46,6 @@ foreach ($events as $event) {
                 $button_message = new TemplateMessageBuilder('タイトル', $button);
                 $bot->replyMessage($reply_token, $button_message);
                 break;
-            }
+        }
     }
 }
