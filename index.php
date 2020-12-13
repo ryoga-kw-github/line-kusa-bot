@@ -13,16 +13,7 @@ $sign = $_SERVER["HTTP_" . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
 
-//------------------------------------
-
-$yes_button = new PostbackTemplateActionBuilder('はい', 'button=1');
-$no_button = new PostbackTemplateActionBuilder('キャンセル', 'button=0');
-$actions = [$yes_button, $no_button];
-$button = new ButtonTemplateBuilder('タイトル', 'テキスト', '', $actions);
-$button_message = new TemplateMessageBuilder('タイトル', $button);
-$bot->replyMessage($reply_token, $button_message);
-
-//------------------------------------
+/*------------------------------------
 
 foreach ($events as $event) {
     if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
@@ -45,3 +36,35 @@ foreach ($events as $event) {
         }
     }
 }
+
+*///------------------------------------
+
+foreach ($events as $event) {
+    switch ($event['type']) {
+        case 'message':
+            $message = $event['message'];
+            switch ($message['type']) {
+                case 'text':
+                    if(strpos($message['text'],'天気') !== false ){
+                        $rep = "http://weather.yahoo.co.jp/weather/";
+                    }
+                    $events->replyMessage(array(
+                        'replyToken' => $event['replyToken'],
+                        'messages' => array(
+                            array(
+                                'type' => 'text',
+                                'text' => $rep
+                            )
+                        )
+                    ));
+                    break;
+                default:
+                    error_log("Unsupporeted message type: " . $message['type']);
+                    break;
+            }
+            break;
+        default:
+            error_log("Unsupporeted event type: " . $event['type']);
+            break;
+    }
+};
