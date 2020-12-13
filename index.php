@@ -13,7 +13,6 @@ $sign = $_SERVER["HTTP_" . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
 
-/*------------------------------------
 
 foreach ($events as $event) {
     if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
@@ -36,35 +35,3 @@ foreach ($events as $event) {
         }
     }
 }
-
-*///------------------------------------
-
-foreach ($events as $event) {
-    switch ($event['type']) {
-        case 'message':
-            $message = $event['message'];
-            switch ($message['type']) {
-                case 'text':
-                    if(strpos($message['text'],'天気') !== false ){
-                        $rep = "http://weather.yahoo.co.jp/weather/";
-                    }
-                    $events->replyMessage(array(
-                        'replyToken' => $event['replyToken'],
-                        'messages' => array(
-                            array(
-                                'type' => 'text',
-                                'text' => $rep
-                            )
-                        )
-                    ));
-                    break;
-                default:
-                    error_log("Unsupporeted message type: " . $message['type']);
-                    break;
-            }
-            break;
-        default:
-            error_log("Unsupporeted event type: " . $event['type']);
-            break;
-    }
-};
