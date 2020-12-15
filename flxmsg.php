@@ -21,8 +21,12 @@ foreach ($events as $event) {
         //$bot->replyText($reply_token, $text);
 
         switch ($text) {
+            case $text === 'どっち':
+                $bot->replyText($reply_token, 'Flxmsg.php');
+                break;
+
             case strpos($text, '草') !==false:
-                $bot->replyText($reply_token, '草言うな');
+                $bot->replyText($reply_token, 'wwwww');
                 break;
             
             case $text === 'あーはん？':
