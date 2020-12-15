@@ -30,7 +30,7 @@ foreach ($events as $event) {
                 break;
 
             case $text === 'どっち':
-                $bot->replyText($reply_token, 'Flxmsg.php');
+                $bot->replyText($reply_token, 'index.php');
                 break;
 
             case $text === '説明':
