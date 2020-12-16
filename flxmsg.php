@@ -28,13 +28,9 @@ foreach ($events as $event) {
             case strpos($text, '草') !==false:
                 $bot->replyText($reply_token, 'wwwww');
                 break;
-            
-            case $text === 'あーはん？':
-                $bot->replyText($reply_token, '黙れよ');
-                break;
 
             case $text === '説明':
-                $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
+                $bot->replyText($reply_token, 'FlexMessageでボタンを表示します');
                 break;
         }
     }
