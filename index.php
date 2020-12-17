@@ -31,6 +31,7 @@ foreach ($events as $event) {
 
             case $text === 'どっち':
                 $bot->replyText($reply_token, 'index.php');
+                //LINE DevelopersでWebhookにどっちを設定したか判断する
                 break;
 
             case $text === '説明':

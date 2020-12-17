@@ -23,10 +23,7 @@ foreach ($events as $event) {
         switch ($text) {
             case $text === 'どっち':
                 $bot->replyText($reply_token, 'Flxmsg.php');
-                break;
-
-            case strpos($text, '草') !==false:
-                $bot->replyText($reply_token, 'wwwww');
+                //LINE DevelopersでWebhookにどっちを設定したか判断する
                 break;
 
             case $text === '説明':
