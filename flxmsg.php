@@ -21,7 +21,7 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
 $event = $events[0];
 
 foreach ($events as $event) {
-  if (!($event instanceof MessageEvent) && !($event instanceof PostbackEvent)) {
+  if (!($event instanceof MessageEvent) && !($event instanceof PostbackEvent) && !($event instanceof TextMessage)) {
       $reply_token = $event->getReplyToken();
       $text = $event->getText();
 
@@ -67,3 +67,5 @@ foreach ($events as $event) {
         }
     }
 }
+
+*/
