@@ -20,19 +20,6 @@ $sign = $_SERVER["HTTP_" . HTTPHeader::LINE_SIGNATURE];
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
 $event = $events[0];
 
-
-
-
-$yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1');
-$no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0');
-
-$actions = [$yes_confirm, $no_confirm];
-
-$confirm = new ConfirmTemplateBuilder('メッセージ', $actions);
-$confirm_message = new TemplateMessageBuilder('confirm', $confirm);
-
-$bot->replyMessage($reply_token, $confirm_message);
-
 foreach ($events as $event) {
   if (!($event instanceof MessageEvent) && !($event instanceof PostbackEvent)) {
       $reply_token = $event->getReplyToken();
