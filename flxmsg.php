@@ -2,16 +2,35 @@
 
 //LINE SDKの読み込み
 require_once __DIR__ . '/vendor/autoload.php';
+use LINE\LINEBot;
+use LINE\LINEBot\Constant\HTTPHeader;
+use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 
-$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(getenv('CHANNEL_ACCESS_TOKEN'));
-$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => getenv('CHANNEL_SECRET')]);
+$httpClient = new CurlHTTPClient(getenv('CHANNEL_ACCESS_TOKEN'));
+$bot = new LINEBot($httpClient, ['channelSecret' => getenv('CHANNEL_SECRET')]);
 
-$sign = $_SERVER["HTTP_" . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
+$sign = $_SERVER["HTTP_" . HTTPHeader::LINE_SIGNATURE];
 
 $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
+$event = $events[0];
+
+
+$reply_token = $event->getReplyToken();
+
+$yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1');
+$no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0');
+
+$actions = [$yes_confirm, $no_confirm];
+
+$confirm = new ConfirmTemplateBuilder('メッセージ', $actions);
+$confirm_message = new TemplateMessageBuilder('confirm', $confirm);
+
+$bot->replyMessage($reply_token, $confirm_message);
+
+
 
 /*
 
@@ -32,55 +51,4 @@ foreach ($events as $event) {
                 break;
         }
     }
-}
-
-*/
-
-  
-  //Confirmテンプレート返信。引数はLINEBot、返信先、代替テキスト、本文、アクション(可変長引数)
-  function replyConfirmTemplate($bot, $replyToken, $alternativeText,$text, ...$actions) {
-    
-    $actionArray = array();
-
-    foreach($actions as $value) {
-      array_push($actionArray, $value);
-    }
-
-    $builder = new \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder(
-      $alternativeText,
-
-      // Confirmテンプレートの引数はテキスト、アクションの配列
-      new \LINE\LINEBot\MessageBuilder\ConfirmTemplateBuilder($text,$actionArray)
-    );
-
-    $response = $bot->replyMessage($replyToken, $builder);
-
-    if(!$response->isSucceeded()){
-      error_log('Failed! '. $response->getHTTPStatus . ' '.$response->getRawBody());
-    }
-
-  }
-
-
-
-  function __construct() {
-
-    $json_string = file_get_contents('php://input');
-    $jsonObj = json_decode($json_string);
-    $this->userId = $jsonObj->{"events"}[0]->{"source"}->{"userId"};
-    $this->replyToken = $jsonObj->{"events"}[0]->{"replyToken"};
-
-    $this->httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($this->token);
-    $this->bot = new \LINE\LINEBot($this->httpClient, ['channelSecret' => $this->secret]);
-
-    $this->replyConfirmTemplate(
-            $this->bot,
-            $this->replyToken,
-            "test",
-            "test",
-            [
-                new \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder("Yes", "Yes"),
-                new \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder("No", "No"),
-            ]
-        );
 }
