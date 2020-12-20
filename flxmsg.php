@@ -36,35 +36,51 @@ foreach ($events as $event) {
 
 */
 
-foreach ((array)$events as $event){
-    // MessageEventクラスのインスタンスでなければ処理をスキップ
-    if(!($event instanceof \LINE\LINEBot\Event\MessageEvent)){
-      error_log('Non Message event has come');
-      continue;
-    }
-    // TextMessageBuilderクラスのインスタンスでなければ処理をスキップ
-    if(!($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage)){
-      error_log('Non Message event has come');
-      continue;
-    }
-    //オウム返し
-    $bot->replyText($event->getReplyToken(), $event->getText());
-  
-  }
   
   //Confirmテンプレート返信。引数はLINEBot、返信先、代替テキスト、本文、アクション(可変長引数)
   function replyConfirmTemplate($bot, $replyToken, $alternativeText,$text, ...$actions) {
+    
     $actionArray = array();
+
     foreach($actions as $value) {
       array_push($actionArray, $value);
     }
+
     $builder = new \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder(
       $alternativeText,
+
       // Confirmテンプレートの引数はテキスト、アクションの配列
       new \LINE\LINEBot\MessageBuilder\ConfirmTemplateBuilder($text,$actionArray)
     );
+
     $response = $bot->replyMessage($replyToken, $builder);
+
     if(!$response->isSucceeded()){
       error_log('Failed! '. $response->getHTTPStatus . ' '.$response->getRawBody());
     }
+
   }
+
+
+
+  function __construct() {
+
+    $json_string = file_get_contents('php://input');
+    $jsonObj = json_decode($json_string);
+    $this->userId = $jsonObj->{"events"}[0]->{"source"}->{"userId"};
+    $this->replyToken = $jsonObj->{"events"}[0]->{"replyToken"};
+
+    $this->httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($this->token);
+    $this->bot = new \LINE\LINEBot($this->httpClient, ['channelSecret' => $this->secret]);
+
+    $this->replyConfirmTemplate(
+            $this->bot,
+            $this->replyToken,
+            "test",
+            "test",
+            [
+                new \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder("Yes", "Yes"),
+                new \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder("No", "No"),
+            ]
+        );
+}
