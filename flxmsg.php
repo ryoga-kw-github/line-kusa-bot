@@ -9,8 +9,8 @@ use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use LINE\LINEBot\Event\MessageEvent;
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use LINE\LINEBot\Event\PostbackEvent;
+use LINE\LINEBot\Event\MessageEvent\TextMessage;
 
 $httpClient = new CurlHTTPClient(getenv('CHANNEL_ACCESS_TOKEN'));
 $bot = new LINEBot($httpClient, ['channelSecret' => getenv('CHANNEL_SECRET')]);
@@ -22,9 +22,12 @@ $event = $events[0];
 
 foreach ($events as $event) {
   if ($event instanceof TextMessage) {
+
+      //入力したテキストを取得して$textに入れる
       $reply_token = $event->getReplyToken();
       $text = $event->getText();
-
+      
+      //$textにどんなテキストが入ってるかによって分岐するSwitch文
       switch ($text) {
           case $text === 'どっち':
               $bot->replyText($reply_token, 'Flxmsg.php');
@@ -34,6 +37,8 @@ foreach ($events as $event) {
           case $text === 'confirm':
               $yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1');
               $no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0');
+
+              
 
               $actions = [$yes_confirm, $no_confirm];
 
@@ -45,27 +50,3 @@ foreach ($events as $event) {
       }
   }
 }
-
-
-/*
-
-foreach ($events as $event) {
-    if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
-        $reply_token = $event->getReplyToken();
-        $text = $event->getText();
-        //$bot->replyText($reply_token, $text);
-
-        switch ($text) {
-            case $text === 'どっち':
-                $bot->replyText($reply_token, 'Flxmsg.php');
-                //LINE DevelopersでWebhookにどっちを設定したか判断する
-                break;
-
-            case $text === '説明':
-                $bot->replyText($reply_token, 'FlexMessageでボタンを表示します');
-                break;
-        }
-    }
-}
-
-*/
