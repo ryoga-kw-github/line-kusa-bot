@@ -21,32 +21,39 @@ $events = $bot->parseEventRequest(file_get_contents('php://input'), $sign);
 $event = $events[0];
 
 foreach ($events as $event) {
-  if ($event instanceof TextMessage) {
+    if ($event instanceof TextMessage) {
 
-      //入力したテキストを取得して$textに入れる
-      $reply_token = $event->getReplyToken();
-      $text = $event->getText();
-      
-      //$textにどんなテキストが入ってるかによって分岐するSwitch文
-      switch ($text) {
-          case $text === 'どっち':
-              $bot->replyText($reply_token, 'Flxmsg.php');
-              //LINE DevelopersでWebhookにどっちを設定したか判断する
-              break;
+        //入力したテキストを取得して$textに入れる
+        $reply_token = $event->getReplyToken();
+        $text = $event->getText();
 
-          case $text === 'confirm':
-              $yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1');
-              $no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0');
+        //$textにどんなテキストが入ってるかによって分岐するSwitch文
+        switch ($text) {
+            case $text === 'どっち':
+                $bot->replyText($reply_token, 'Flxmsg.php');
+                //LINE DevelopersでWebhookにどっちを設定したか判断する
+                break;
 
-              
+            case $text === 'confirm':
+                $yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1');
+                $no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0');
 
-              $actions = [$yes_confirm, $no_confirm];
+                $actions = [$yes_confirm, $no_confirm];
 
-              $confirm = new ConfirmTemplateBuilder('メッセージ', $actions);
-              $confirm_message = new TemplateMessageBuilder('confirm', $confirm);
+                $confirm = new ConfirmTemplateBuilder('メッセージ', $actions);
+                $confirm_message = new TemplateMessageBuilder('confirm', $confirm);
 
-              $bot->replyMessage($reply_token, $confirm_message);
-              break;
-      }
-  }
+                $bot->replyMessage($reply_token, $confirm_message);
+                break;
+
+            case data === 'confirm=0':
+                $bot->replyText($reply_token, 'aiueo');
+                break;
+
+            case data === 'confirm=0':
+                $bot->replyText($reply_token, '????????');
+                break;
+
+        }
+    }
 }
