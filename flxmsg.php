@@ -46,6 +46,10 @@ foreach ($events as $event) {
                 $bot->replyMessage($reply_token, $confirm_message);
                 break;
 
+            //-------------------------------------------------------------------------
+            
+            //上のConfirmメッセージでボタンを押したときにメッセージを送らせたい
+                        
             case data === 'confirm=0':
                 $bot->replyText($reply_token, 'aiueo');
                 break;
@@ -53,6 +57,8 @@ foreach ($events as $event) {
             case data === 'confirm=0':
                 $bot->replyText($reply_token, '????????');
                 break;
+            
+            //-------------------------------------------------------------------------
 
         }
     }
