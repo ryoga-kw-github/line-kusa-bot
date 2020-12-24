@@ -50,11 +50,11 @@ foreach ($events as $event) {
             
             //上のConfirmメッセージでボタンを押したときにメッセージを送らせたい
                         
-            case data === 'confirm=0':
+            case $actions === 'confirm=1':
                 $bot->replyText($reply_token, 'aiueo');
                 break;
 
-            case data === 'confirm=0':
+            case $actions === 'confirm=0':
                 $bot->replyText($reply_token, '????????');
                 break;
             
