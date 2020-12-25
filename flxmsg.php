@@ -44,17 +44,22 @@ foreach ($events as $event) {
                 $confirm_message = new TemplateMessageBuilder('confirm', $confirm);
 
                 $bot->replyMessage($reply_token, $confirm_message);
+
+                //ボタンを押したときのデータを取得
+                $postback_data = $event->getPostbackData();
+                parse_str($postback_data, $data);
+                
                 break;
 
             //-------------------------------------------------------------------------
             
             //上のConfirmメッセージでボタンを押したときにメッセージを送らせたい
                         
-            case $actions === 'confirm=1':
+            case $data === 'confirm=1':
                 $bot->replyText($reply_token, 'aiueo');
                 break;
 
-            case $actions === 'confirm=0':
+            case $data === 'confirm=0':
                 $bot->replyText($reply_token, '????????');
                 break;
             
