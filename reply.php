@@ -1,106 +1,40 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-use LINE\LINEBot;
 use LINE\LINEBot\Constant\HTTPHeader;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
-use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
-use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
-use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
-use LINE\LINEBot\Event\MessageEvent;
-use LINE\LINEBot\Event\PostbackEvent;
-use LINE\LINEBot\Event\MessageEvent\TextMessage;
+use LINE\LINEBot;
+use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\QuickReplyBuilder\ButtonBuilder\QuickReplyButtonBuilder;
+use LINE\LINEBot\QuickReplyBuilder\QuickReplyMessageBuilder;
+
+$httpClient = new CurlHTTPClient(getenv('CHANNEL_ACCESS_TOKEN'));
+$bot = new LINEBot($httpClient, ['channelSecret' => getenv('CHANNEL_SECRET')]);
+
+$signature = $_SERVER['HTTP_' . HTTPHeader::LINE_SIGNATURE];
+$http_request_body = file_get_contents('php://input');
+$events = $bot->parseEventRequest($http_request_body, $signature);
+$event = $events[0];
+$reply_token = $event->getReplyToken();
 
 
-$access_token = new CurlHTTPClient(getenv('CHANNEL_ACCESS_TOKEN'));
+$categories = [
+    '和食',
+    '洋食',
+    '中華料理',
+    'アジア・エスニック',
+    'イタリアン',
+    'フレンチ'
+];
 
-$json_string = file_get_contents('php://input');
-
-$json_obj = json_decode($json_string);
-
-$reply_token = $json_obj->{'events'}[0]->{'replyToken'};
-
-$type = $json_obj->{'events'}[0]->{'type'};
-
-$msg_obj = $json_obj->{'events'}[0]->{'message'}->{'type'};
-
-if($type === 'message') {
-    if($msg_obj === 'text') {
-        $msg_text = $json_obj->{'events'}[0]->{'message'}->{'text'};
-        if($msg_text === '予約') {
-            $message = array(
-                'type' => 'template',
-                'altText' => 'いつのご予約ですか？',
-                'template' => array(
-                    'type' => 'confirm',
-                    'text' => 'いつのご予約ですか？',
-                    'actions' => array(
-                        array(
-                            'type' => 'postback',
-                            'label' => '予約しない',
-                            'data' => 'action=back'
-                        ), array(
-                            'type' => 'datetimepicker',
-                            'label' => '期日を指定',
-                            'data' => 'datetemp',
-                            'mode' => 'date'
-                        )
-                    )
-                )
-            );
-        } else {
-            $message = array(
-                'type' => 'text',
-                'text' => '【'.$msg_text.'】とは何ですか？'
-            );
-        }
-    } elseif($msg_obj === 'location') {
-        // 位置情報を受け取った時
-        $message = array(
-            'type' => 'location',
-            'title' => '皇居',
-            'address' => '〒100-8111 東京都千代田区千代田１−１',
-            'latitude' => 35.683798,
-            'longitude' => 139.754182
-        );
-    }
-} else if($type === 'postback') {
-    // ポストバック受け取り時
-
-    // 送られたデータ
-    $postback = $json_obj->{'events'}[0]->{'postback'}->{'data'};
-
-    if($postback === 'datetemp') {
-        // 日にち選択時
-        $message = array(
-            'type' => 'text',
-            'text' => '【'.$json_obj->{'events'}[0]->{'postback'}->{'params'}->{'date'}.'】にご予約を承りました。'
-        );
-    } elseif($postback === 'action=back') {
-        // 戻る選択時
-        $message = array(
-            'type' => 'text',
-            'text' => '何もしませんでした。'
-        );
-    }
+foreach ($categories as $category) {
+    // 1、表示する文言と押下時に送信するメッセージをセット
+    $message_template_action_builder = new MessageTemplateActionBuilder($category, $category . 'を選択したよ！');
+    // 2、1をボタンに組み込む
+    $quick_reply_button_builder = new QuickReplyButtonBuilder($message_template_action_builder);
+    // 3、ボタンを配列に格納する(12個まで)
+    $quick_reply_buttons[] = $quick_reply_button_builder;
 }
-
-$post_data = array(
-    'replyToken' => $reply_token,
-    'messages' => array($message)
-);
-
-// CURLでメッセージを返信する
-$ch = curl_init('https://api.line.me/v2/bot/message/reply');
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/json; charser=UTF-8',
-    'Authorization: Bearer ' . $access_token
-));
-$result = curl_exec($ch);
-curl_close($ch);
-
-?>
+// 4、3を元にクイックリプライを作成する
+$quick_reply_message_builder = new QuickReplyMessageBuilder($quick_reply_buttons);
+$text_message_builder = new TextMessageBuilder('カテゴリを選択してください', $quick_reply_message_builder);
+$bot->replyMessage($reply_token, $text_message_builder);
