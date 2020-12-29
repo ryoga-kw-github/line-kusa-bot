@@ -34,42 +34,57 @@ foreach ($events as $event) {
                 //LINE DevelopersでWebhookにどっちを設定したか判断する
                 break;
 
-            case $text === 'confirm':
-                $yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1','はいを選択しました。');
-                $no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0','いいえを選択しました');
-
-                $actions = [$yes_confirm, $no_confirm];
-
-                $confirm = new ConfirmTemplateBuilder('メッセージ', $actions);
-                $confirm_message = new TemplateMessageBuilder('confirm', $confirm);
-
-                $bot->replyMessage($reply_token, $confirm_message);
-
-                //ボタンを押したときのデータを取得
-                $postback_data = $event->getPostbackData();
-                parse_str($postback_data, $data);
+            case $text === '体調管理':
+                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good','体調が良い');
+                $taityo_bad = new PostbackTemplateActionBuilder('悪い', 'taityo=bad','体調がよくない');
+                $taityo_actions = [$taityo_good, $taityo_bad];
+                $taityo_confirm = new ConfirmTemplateBuilder('今日の体調は？', $taityo_actions);
+                //Confirmメッセージの本体
+                $taityo_confirm_message = new TemplateMessageBuilder('confirm', $taityo_confirm);
+                //replyMessageという関数で先程作ったConfirmメッセージをトークに送信
+                $bot->replyMessage($reply_token, $taityo_confirm_message);
 
                 break;
 
-            case $text === 'でーたてすと':
-                $bot->replyMessage($reply_token, $data);
+            //「体調管理」で「良い」を選択した場合
+            case $text === '体調が良い':
+                $bot->replyMessage($reply_token, 'よかったです！このまま感染症対策を徹底しましょう！');
                 break;
 
-            //------------------------------------------------------------------------
+            //「体調管理」で「悪い」を選択した場合
+            case $text === '体調がよくない':
+                $hatunetu_yes = new PostbackTemplateActionBuilder('ある', 'hatunetu=yes','熱がある');
+                $hatunetu_no = new PostbackTemplateActionBuilder('ない', 'hatunetu=no','熱はない');
+                $hatunetu_actions = [$hatunetu_yes, $hatunetu_no];
+                $hatunetu_confirm = new ConfirmTemplateBuilder('熱はありますか？',$hatunetu_actions);
+                $hatunetu_confirm_message = new TemplateMessageBuilder('confirm', $hatunetu_confirm);
 
-
-            //上のConfirmメッセージでボタンを押したときにメッセージを送らせたい
-                        
-            case $data === 'confirm=1':
-                $bot->replyMessage($reply_token, 'aiueo');
-                break;
-
-            case $data === 'confirm=0':                
-                $bot->replyMessage($reply_token, '????????');
-                break;
+                $bot->replyMessage($reply_token, $hatunetu_confirm_message);
             
-            //-------------------------------------------------------------------------
+             //「熱がある」場合、手動で体温を入力してもらうようにメッセージを送信
+            case $text === '熱がある':
+                $bot->replyMessage($reply_token, '手動で体温を入力してください。(例）:7度6分の場合->37.6と入力してください。 ※大文字は正しく認識しません');
+                break;
 
+            //「熱が」37.5以上の時に動く
+            case $text >= 37.5:
+                $bot->replyMessage($reply_token, '37.5度以上の発熱が4日間以上(高齢者の場合は2日間以上)続くのであれば、帰国者・接触者相談センターへ相談することをお勧めします。');
+                break;
+
+            //「熱が」37.5以下の時に動く
+            case $text < 37.5:
+                $bot->replyMessage($reply_token, '体温が37.5度以下でも、強い倦怠感や息苦しさがある場合は、帰国者・接触者相談センターへ相談することをお勧めします。');
+                break;
+
+            //「熱はない」場合、発熱以外の症状を聞く(頭痛や倦怠感など)
+            case $text === '熱はない':
+                $bot->replyMessage($reply_token, 'ああああ');
+                break;
         }
     }
 }
+
+
+//ボタンを押したときのデータを取得
+//$postback_data = $event->getPostbackData();
+//parse_str($postback_data, $data);
