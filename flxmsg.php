@@ -35,8 +35,8 @@ foreach ($events as $event) {
                 break;
 
             case $text === 'confirm':
-                $yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1');
-                $no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0');
+                $yes_confirm = new PostbackTemplateActionBuilder('はい', 'confirm=1','はいを選択しました。');
+                $no_confirm = new PostbackTemplateActionBuilder('いいえ', 'confirm=0','いいえを選択しました');
 
                 $actions = [$yes_confirm, $no_confirm];
 
