@@ -80,6 +80,9 @@ foreach ($events as $event) {
             case $text === '熱はない':
                 $bot->replyText($reply_token, 'ああああ');
                 break;
+
+            default:
+            $bot->replyText($reply_token, 'ﾜﾚﾜﾚﾊ ｳﾁｭｳｼﾞﾝﾀﾞ'); 
         }
     }
 }
