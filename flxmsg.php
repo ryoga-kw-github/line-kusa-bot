@@ -35,7 +35,11 @@ foreach ($events as $event) {
                 break;
 
             case $text === '体調管理':
-                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good','体調が良い');
+                
+                //$dataにデータが入ってるかテストするためのやつ
+                $t ='a';
+                //↑後で消す
+                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good',$data+$t+'体調が良い');
                 $taityo_bad = new PostbackTemplateActionBuilder('悪い', 'taityo=bad','体調がよくない');
                 $taityo_actions = [$taityo_good, $taityo_bad];
                 $taityo_confirm = new ConfirmTemplateBuilder('今日の体調は？', $taityo_actions);
@@ -44,9 +48,7 @@ foreach ($events as $event) {
                 //replyMessageという関数で先程作ったConfirmメッセージをトークに送信
                 $bot->replyMessage($reply_token, $taityo_confirm_message);
                 
-                //$dataにデータが入ってるかテストするためのやつ
-                $t ='a';
-                //↑後で消す
+                
 
                 //ボタンを押したときのデータを取得
                 $postback_data = $event->getPostbackData();
@@ -61,7 +63,7 @@ foreach ($events as $event) {
 
             //「体調管理」で「悪い」を選択した場合
             case $data === 'taityo=bad':
-                $hatunetu_yes = new PostbackTemplateActionBuilder('ある', 'hatunetu=yes',$data+$t+'熱がある');
+                $hatunetu_yes = new PostbackTemplateActionBuilder('ある', 'hatunetu=yes','熱がある');
                 $hatunetu_no = new PostbackTemplateActionBuilder('ない', 'hatunetu=no','熱はない');
                 $hatunetu_actions = [$hatunetu_yes, $hatunetu_no];
                 $hatunetu_confirm = new ConfirmTemplateBuilder('熱はありますか？',$hatunetu_actions);
