@@ -39,7 +39,7 @@ foreach ($events as $event) {
                 //$dataにデータが入ってるかテストするためのやつ
                 $t ='a';
                 //↑後で消す
-                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good',$data+$t+'体調が良い');
+                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good',$t);
                 $taityo_bad = new PostbackTemplateActionBuilder('悪い', 'taityo=bad','体調がよくない');
                 $taityo_actions = [$taityo_good, $taityo_bad];
                 $taityo_confirm = new ConfirmTemplateBuilder('今日の体調は？', $taityo_actions);
