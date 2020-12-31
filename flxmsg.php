@@ -57,7 +57,7 @@ foreach ($events as $event) {
 
             //「体調管理」で「悪い」を選択した場合
             case $data === 'taityo=bad':
-                $hatunetu_yes = new PostbackTemplateActionBuilder('ある', 'hatunetu=yes','熱がある');
+                $hatunetu_yes = new PostbackTemplateActionBuilder('ある', 'hatunetu=yes',$data+'熱がある');
                 $hatunetu_no = new PostbackTemplateActionBuilder('ない', 'hatunetu=no','熱はない');
                 $hatunetu_actions = [$hatunetu_yes, $hatunetu_no];
                 $hatunetu_confirm = new ConfirmTemplateBuilder('熱はありますか？',$hatunetu_actions);
