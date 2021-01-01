@@ -35,11 +35,7 @@ foreach ($events as $event) {
                 break;
 
             case $text === '体調管理':
-                
-                //$dataにデータが入ってるかテストするためのやつ
-                $t ='a';
-                //↑後で消す
-                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good',$t);
+                $taityo_good = new PostbackTemplateActionBuilder('良い', 'taityo=good','体調が良い');
                 $taityo_bad = new PostbackTemplateActionBuilder('悪い', 'taityo=bad','体調がよくない');
                 $taityo_actions = [$taityo_good, $taityo_bad];
                 $taityo_confirm = new ConfirmTemplateBuilder('今日の体調は？', $taityo_actions);
@@ -48,8 +44,6 @@ foreach ($events as $event) {
                 //replyMessageという関数で先程作ったConfirmメッセージをトークに送信
                 $bot->replyMessage($reply_token, $taityo_confirm_message);
                 
-                
-
                 //ボタンを押したときのデータを取得
                 $postback_data = $event->getPostbackData();
                 parse_str($postback_data, $data);
