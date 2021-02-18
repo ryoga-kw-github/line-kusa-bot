@@ -29,12 +29,11 @@ foreach ($events as $event) {
                 $bot->replyText($reply_token, '黙れよ');
                 break;
 
-            case $text === 'どっち':
-                $bot->replyText($reply_token, 'index.php');
-                //LINE DevelopersでWebhookにどっちを設定したか判断する
+            case strpos($text, '宇宙人') !==false:
+                $bot->replyText($reply_token, 'ﾜﾚﾜﾚﾊ ｳﾁｭｳｼﾞﾝﾀﾞ');
                 break;
 
-            case $text === '説明':
+            case $text === 'Bot説明':
                 $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
                 break;
         }
