@@ -36,6 +36,15 @@ foreach ($events as $event) {
             case $text === 'Bot説明':
                 $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
                 break;
+
+            case $text === '兵庫':
+                $bot->replyText($reply_token, '岐阜');
+                break;
+
+            case $text === 'ヒョギフ':
+                $bot->replyText($reply_token, 'ヒョギフ大統領の貴重な産卵シーン');
+                break;
+            
         }
     }
 }
