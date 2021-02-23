@@ -44,7 +44,33 @@ foreach ($events as $event) {
             case $text === 'ヒョギフ':
                 $bot->replyText($reply_token, 'ヒョギフ大統領の貴重な産卵シーン');
                 break;
-            
+
+            case $text === '群馬':
+                $bot->replyText($reply_token, '埼玉');
+                break;
+
+            case $text === 'グンタマ':
+                $bot->replyText($reply_token, 'オオグンタマの貴重な産卵シーン');
+
+            case $text === '山形':
+                $bot->replyText($reply_token, '北海道');
+                break;
+
+            case $text === 'ヤマイドウ':
+                $bot->replyText($reply_token, '全日本アマチュアヤマイドウ選手権大会');
+                break;
+
+            case $text === '愛媛':
+                $bot->replyText($reply_token, '岐阜');
+                break;
+
+            case $text === 'エヒフ':
+                $bot->replyText($reply_token, 'オオグンタマのエヒフ');
+                break;
+
+            case $text === '茨城':
+                $bot->replyText($reply_token, 'イバーﾙﾙﾙｱキｲー');
+                break;   
         }
     }
 }
