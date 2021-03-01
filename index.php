@@ -34,7 +34,23 @@ foreach ($events as $event) {
                 break;
 
             case $text === 'Bot説明':
-                $bot->replyText($reply_token, '特定の単語を送ると返事してくれます');
+                $bot->replyText($reply_token, "単語を送ると返事してくれます。\n
+                    1.草\n
+                    2.あーはん？\n
+                    3.宇宙人\n
+                    4.兵庫\n
+                    5.ヒョギフ\n
+                    6.群馬\n
+                    7.グンタマ\n
+                    8.山形\n
+                    9.ヤマイドウ\n
+                    10.愛媛\n
+                    11.エヒフ\n
+                    12.茨城\n
+                    13.応援\n
+                    14.千葉\n
+                    15.佐賀"
+                );
                 break;
 
             case $text === '兵庫':
@@ -69,11 +85,31 @@ foreach ($events as $event) {
                 break;
 
             case $text === '茨城':
-                $bot->replyText($reply_token, 'イバーﾙﾙﾙｱキｲー');
+                $bot->replyText($reply_token, 'イｳﾞｧーﾙﾙﾙｱキｲー');
                 break;
 
             case strpos($text, '応援') !==false:
                 $bot->replyText($reply_token, 'ｶﾞﾝﾊﾞﾚｰ!!');
+                break;
+
+            case $text === '千葉':
+                $bot->replyText($reply_token, '茨城');
+                break;
+
+            case $text === 'チバラキ':
+                $bot->replyText($reply_token, 'チバーﾙﾙﾙｱキｲー');
+                break;
+
+            case $text === '奈良':
+                $bot->replyText($reply_token, 'ナーﾙﾙﾙｱー');
+                break;
+            
+            case $text === '千葉':
+                $bot->replyText($reply_token, '滋賀');
+                break;
+
+            case $text === '佐賀':
+                $bot->replyText($reply_token, '千葉滋賀佐賀');
                 break;
         }
     }
