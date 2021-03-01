@@ -70,7 +70,11 @@ foreach ($events as $event) {
 
             case $text === '茨城':
                 $bot->replyText($reply_token, 'イバーﾙﾙﾙｱキｲー');
-                break;   
+                break;
+
+            case strpos($text, '応援') !==false:
+                $bot->replyText($reply_token, 'ｶﾞﾝﾊﾞﾚｰ!!');
+                break;
         }
     }
 }
